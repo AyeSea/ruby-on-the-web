@@ -1,11 +1,10 @@
 require "socket"
 
 #Web server hostname
-host = "www.tutorialspoint.com"
-#Default HTTP port
-port = 80
+host = "localhost"
+port = 2000
 #local path/URL
-path = "/index.htm"
+path = "/index.html"
 
 #HTTP request we send to GET a file
 request = "GET #{path} HTTP/1.0\r\n\r\n"
@@ -21,4 +20,5 @@ response = socket.read
 #Split response at first blank line into headers and body, where
 #everything after the first blank line is considered the body.
 headers, body = response.split("\r\n\r\n", 2)
-print body
+puts headers
+puts body
