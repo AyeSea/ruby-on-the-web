@@ -1,4 +1,11 @@
-require "socket"
+require 'socket'
+require 'json'
+
+def display_headers(method, path, http_version, file)
+	#move header display logic over here. reuse for both GET and POST.
+end
+
+
 
 #Create a TCP/IP server socket to listen on port 2000.
 #Inherits from class IO, so same IO#open method that we use w/ the File class.
@@ -13,7 +20,7 @@ loop {
 	method = req[0]
 	path = req[1]
 	http_version = req[2].chomp
-	file = "index.html"
+	file = path.gsub(/\//, "")
 
 	#If request method is GET and the path is "index.html", then
 	if method == "GET" && path == "/index.html"
@@ -29,6 +36,8 @@ loop {
 		page_contents.each do |line|
 			client.puts line
 		end
+	elsif method == "POST" && path == "/thanks.html"
+		#display 
 	else
 		client.puts "#{http_version} 404 Not Found"
 	end
