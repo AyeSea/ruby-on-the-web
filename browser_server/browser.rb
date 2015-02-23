@@ -10,6 +10,7 @@ class Browser
 
 	def run
 		create_http_req
+		create_viking if @req_type == "POST"
 		send_req
 		receive_resp
 	end
@@ -18,7 +19,6 @@ class Browser
 	def create_http_req
 		@req_type = confirm_req_type
 		@req_path = confirm_req_path
-		@content_type = @req_type == "GET" ? "text/html" : "application/x-www-form-urlencoded"
 		@req = "#{@req_type} #{@req_path} HTTP/1.0\r\n\r\n"
 	end
 
@@ -29,9 +29,9 @@ class Browser
 
 	def receive_resp
 		resp = @socket.read
-		headers, body = resp.split("\r\n\r\n")
-		puts headers
-		puts body
+		resp_headers, resp_body = resp.split("\r\n\r\n")
+		puts resp_headers
+		puts resp_body
 	end
 
 	def confirm_req_type
@@ -50,7 +50,24 @@ class Browser
 
 	def headers
 		@socket.puts "From: testuser@theodinproject.com"
-		@socket.puts "User-Agent: CLI Browser v1.0\r\n\r\n"
+		@socket.puts "User-Agent: CLI Browser v1.0"
+		if @req_type == "POST"
+			@socket.puts "Content-Type: application/x-www-form-urlencoded"
+			@socket.puts "Content-Length: #{@form_data.size}\r\n\r\n"
+			@socket.puts @form_data
+		end
+	end
+
+	def create_viking
+		@form_data = {}
+		puts "You've chosen to register a viking for a raid!"
+		puts "Enter your name:"
+		@name = gets.chomp.capitalize
+		puts "Enter your email:"
+		@email = gets.chomp
+
+		@form_data[:viking] = {:name=>@name, :email=>@email}
+		@form_data = @form_data.to_json
 	end
 
 end
